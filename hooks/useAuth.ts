@@ -96,12 +96,17 @@ export function useAuth(): UseAuthReturn {
 
   const handleGoogleLogin = async () => {
     try {
-      await supabase.auth.signInWithOAuth({
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/dashboard`,
+          redirectTo: `${window.location.origin}/auth/callback`,
         },
       });
+      
+      if (error) {
+        setError(error.message);
+        console.error("Error with Google login:", error);
+      }
     } catch (error: any) {
       setError(error.message);
       console.error("Error with Google login:", error);
